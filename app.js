@@ -3,33 +3,43 @@ const bot = new Discord.Client();
 // 菜單
 const food = {
   breakfast: [
-    "蛋餅",
+    "豬排蛋餅",
+    "玉米蛋餅",
+    "燻雞蛋餅",
     "蘿蔔糕",
     "吐司夾蛋",
+    "火腿蛋吐司",
     "鐵板麵",
     "饅頭",
     "豬排堡",
     "燒餅",
     "花生厚片",
-    "火腿蛋吐司"
+    "巧克力厚片",
+    "燒餅油條"
   ], // 0-1 len = 2
   lunch: [
     "丼飯",
     "肯德基",
     "麥當勞",
     "炒飯",
+    "乾麵",
     "義大利麵",
+    "焗烤蛤蠣燉飯",
+    "吉野家",
     "自助餐",
     "滷肉飯",
     "披薩",
     "咖哩飯",
     "烏龍麵",
     "壽司",
-    "拉麵"
+    "拉麵",
+    "油飯",
+    "鍋貼"
   ],
   dinner: [
     "雞腿飯",
     "廣東粥",
+    "小籠包",
     "牛肉麵",
     "水餃",
     "雞排",
@@ -39,7 +49,8 @@ const food = {
     "肉圓",
     "肉羹麵",
     "碗粿",
-    "排骨飯"
+    "排骨飯",
+    "鍋貼"
   ]
 };
 // 產生隨機數
@@ -86,15 +97,15 @@ bot.on("message", message => {
       return;
     }
     if (message.content === "!機率") {
-      message.channel.send(`SSR 卡機率 95%\nSR 卡機率 4%\nR卡 1%`);
+      message.channel.send(`R 卡機率 80%\nSR 卡機率 15%\nSSR卡 5%`);
     }
     if (message.content === "!抽卡") {
       let num = getRandomInt(1, 101);
-      if (num >= 1 && num <= 95) {
+      if (num >= 1 && num <= 80) {
         message.channel.send(
           `${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`
         );
-      } else if (num >= 96 && num <= 99) {
+      } else if (num >= 81 && num <= 95) {
         message.channel.send(
           `${message.author.toString()}，恭喜抽中 SR，再...`
         );
@@ -104,19 +115,36 @@ bot.on("message", message => {
     }
     // 十連抽
     if (message.content === "!十抽") {
+      let times = 0;
       for (let i = 0; i < 10; i++) {
         let num = getRandomInt(1, 101);
-        if (num >= 1 && num <= 95) {
+        if (num >= 1 && num <= 80) {
+          times += 1;
+          console.log(times);
+          if (times == 10) break;
           message.channel.send(
             `${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`
           );
-        } else if (num >= 96 && num <= 99) {
+        } else if (num >= 81 && num <= 95) {
           message.channel.send(
             `${message.author.toString()}，恭喜抽中 SR，再...`
           );
         } else {
-          message.channel.send(`${message.author.toString()}，恭喜抽中 SSR`);
+          message.channel.send(
+            `${message.author.toString()}，恭喜抽中 SSR，賽狗一條`
+          );
         }
+      }
+      if (times < 10) {
+        return;
+      }
+      num = getRandomInt(1, 101);
+      if (num >= 1 && num <= 99) {
+        message.channel.send(
+          `${message.author.toString()}，保底 SR，下次一定...`
+        );
+      } else {
+        message.channel.send(`${message.author.toString()}，保底 SSR，再...`);
       }
     }
   }
