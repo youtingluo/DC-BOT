@@ -104,8 +104,18 @@ bot.on("message", message => {
     }
     // 十連抽
     if (message.content === "!十抽") {
+      let times = 0;
       for (let i = 0; i < 10; i++) {
+        console.log(times);
         let num = getRandomInt(1, 101);
+        if (num <= 95) {
+          times += 1;
+          if (times == 9) {
+            console.log(times);
+
+            break;
+          }
+        }
         if (num >= 1 && num <= 95) {
           message.channel.send(
             `${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`
@@ -118,11 +128,30 @@ bot.on("message", message => {
           message.channel.send(`${message.author.toString()}，恭喜抽中 SSR`);
         }
       }
+      let num = getRandomInt(1, 101);
+      if (num >= 1 && num <= 99) {
+        message.channel.send(
+          `${message.author.toString()}，恭喜抽中 SR，今天還是個非洲人`
+        );
+      } else {
+        message.channel.send(
+          `${message.author.toString()}，恭喜抽中 SSR，今天還是個非洲人`
+        );
+      }
     }
   }
   // 爆雷功能
+  function spoiler() {
+    if (message.author.bot) {
+      return;
+    }
+    if (message.content === "!爆雷") {
+      message.channel.send(`||鋼鐵人死了||`);
+    }
+  }
   foodRecommend();
   card();
+  spoiler();
 });
 
 bot.login("NjczNzk3NDMzMzMwODkyODE5.XjfRLA.Ji0E8pcKt4OU4iBP3MfvAjeJ_po");
