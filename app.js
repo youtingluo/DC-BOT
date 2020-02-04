@@ -113,64 +113,30 @@ bot.on("message", message => {
         message.channel.send(`${message.author.toString()}，恭喜抽中 SSR`);
       }
     }
-    // 十連抽
-    if (message.content === "!十抽") {
-      let times = 0;
-      for (let i = 0; i < 10; i++) {
-        let num = getRandomInt(1, 101);
-        if (num >= 1 && num <= 80) {
-          times += 1;
-          console.log(times);
-          if (times == 10) break;
-          message.channel.send(
-            `${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`
-          );
-        } else if (num >= 81 && num <= 95) {
-          message.channel.send(
-            `${message.author.toString()}，恭喜抽中 SR，再...`
-          );
-        } else {
-          message.channel.send(
-            `${message.author.toString()}，恭喜抽中 SSR，賽狗一條`
-          );
-        }
-      }
-      if (times < 10) {
-        return;
-      }
-      num = getRandomInt(1, 101);
-      if (num >= 1 && num <= 99) {
-        message.channel.send(
-          `${message.author.toString()}，保底 SR，下次一定...`
-        );
-      } else {
-        message.channel.send(`${message.author.toString()}，保底 SSR，再...`);
-      }
-    }
   }
   // 十連抽字串
   function tenCard() {
-    if (message.content === "!字串抽") {
+    if (message.content === "!十抽") {
       let times = 0;
       let str = "";
       for (let i = 0; i < 10; i++) {
         let num = getRandomInt(1, 101);
-        if (num >= 1 && num <= 80) {
+        if (num >= 1 && num <= 85) {
           times += 1;
-          console.log(times);
           if (times == 10) break;
           str += num + " 恭喜抽中 R，今天還是個非洲人\n";
-        } else if (num >= 81 && num <= 95) {
+        } else if (num >= 86 && num <= 95) {
           str += num + "恭喜抽中 SR，再...\n";
         } else {
           str += num + "恭喜抽中 SSR，賽狗一條\n";
         }
       }
-      console.log(str);
-      message.channel.send(str);
+      if (times != 10) {
+        message.channel.send(str);
+      }
       if (times == 10) {
         num = getRandomInt(1, 101);
-        if (num >= 1 && num <= 99) {
+        if (num >= 1 && num <= 95) {
           str += num + "保底 SR，下次一定...";
         } else {
           str += num + "保底 SSR，再...";
@@ -180,8 +146,8 @@ bot.on("message", message => {
     }
   }
   foodRecommend();
-  tenCard();
   card();
+  tenCard();
 });
 
 bot.login("NjczNzk3NDMzMzMwODkyODE5.XjfRLA.Ji0E8pcKt4OU4iBP3MfvAjeJ_po");
