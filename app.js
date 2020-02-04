@@ -1,23 +1,38 @@
 const Discord = require("discord.js");
 const bot = new Discord.Client();
+const embed = new Discord.RichEmbed();
 // 菜單
 const food = {
   breakfast: [
     "豬排蛋餅",
     "玉米蛋餅",
-    "燻雞蛋餅",
+    "火腿蛋餅",
+    "培根蛋餅",
+    "起司蛋餅",
+    "玉米蛋餅",
+    "肉鬆蛋餅",
+    "鮪魚蛋餅",
     "蘿蔔糕",
     "吐司夾蛋",
     "火腿蛋吐司",
+    "培根蛋吐司",
+    "豬排蛋吐司",
     "鐵板麵",
     "饅頭",
     "豬排堡",
-    "燒餅",
+    "牛肉堡",
+    "香雞堡",
+    "飯糰",
     "花生厚片",
     "巧克力厚片",
-    "燒餅油條"
+    "奶酥厚片",
+    "燒餅油條",
+    "麵包"
   ], // 0-1 len = 2
   lunch: [
+    "雞肉飯",
+    "鐵板燒",
+    "三寶飯",
     "丼飯",
     "肯德基",
     "麥當勞",
@@ -34,9 +49,14 @@ const food = {
     "壽司",
     "拉麵",
     "油飯",
-    "鍋貼"
+    "鍋貼",
+    "Subway",
+    "漢堡王",
+    "擔仔麵"
   ],
   dinner: [
+    "炸豬排飯",
+    "牛丼",
     "雞腿飯",
     "廣東粥",
     "小籠包",
@@ -50,7 +70,13 @@ const food = {
     "肉羹麵",
     "碗粿",
     "排骨飯",
-    "鍋貼"
+    "鍋貼",
+    "蝦仁炒飯",
+    "肉絲炒麵",
+    "烏龍麵",
+    "海鮮總匯鮮蔬焗飯",
+    "鴨肉飯",
+    "筒仔米糕"
   ]
 };
 // 產生隨機數
@@ -66,7 +92,7 @@ bot.on("message", message => {
   }
   if (message.content === "!指令") {
     message.channel.send(
-      `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!機率(卡片機率)`
+      `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!十抽 <祭品> (出現SSR有祭品)\n!機率(卡片機率)`
     );
   }
   // 推薦食物功能
@@ -101,11 +127,11 @@ bot.on("message", message => {
     }
     if (message.content === "!抽卡") {
       let num = getRandomInt(1, 101);
-      if (num >= 1 && num <= 80) {
+      if (num >= 1 && num <= 85) {
         message.channel.send(
           `${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`
         );
-      } else if (num >= 81 && num <= 95) {
+      } else if (num >= 86 && num <= 95) {
         message.channel.send(
           `${message.author.toString()}，恭喜抽中 SR，再...`
         );
@@ -143,6 +169,9 @@ bot.on("message", message => {
           str += "保底 SSR，再...";
         }
         message.channel.send(message.author.toString() + "\n" + str);
+        message.channel.send("", {
+          files: ["G:\\DC_BOT\\QQ.jpg"]
+        });
       }
     }
     if (msg[0] === "!十抽" && msg[1]) {
@@ -171,6 +200,9 @@ bot.on("message", message => {
           str += "保底 SSR，再...";
         }
         message.channel.send(message.author.toString() + "\n" + str);
+        message.channel.send("", {
+          files: ["G:\\DC_BOT\\QQ2.jpg"]
+        });
       }
       if (str.indexOf("SSR") > -1) {
         message.channel.send(msg[1] + "囉，" + message.author.username);
