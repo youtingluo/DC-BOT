@@ -124,24 +124,24 @@ bot.on("message", message => {
         if (num >= 1 && num <= 85) {
           times += 1;
           if (times == 10) break;
-          str += num + " 恭喜抽中 R，今天還是個非洲人\n";
+          str += "恭喜抽中 R，今天還是個非洲人\n";
         } else if (num >= 86 && num <= 95) {
-          str += num + "恭喜抽中 SR，再...\n";
+          str += "恭喜抽中 SR，再...\n";
         } else {
-          str += num + "恭喜抽中 SSR，賽狗一條\n";
+          str += "恭喜抽中 SSR，賽狗一條\n";
         }
       }
       if (times != 10) {
-        message.channel.send(str);
+        message.channel.send(message.author.toString() + "\n" + str);
       }
       if (times == 10) {
         num = getRandomInt(1, 101);
         if (num >= 1 && num <= 95) {
-          str += num + "保底 SR，下次一定...";
+          str += "保底 SR，下次一定...";
         } else {
-          str += num + "保底 SSR，再...";
+          str += "保底 SSR，再...";
         }
-        message.channel.send(str);
+        message.channel.send(message.author.toString() + "\n" + str);
       }
     }
   }
