@@ -97,7 +97,7 @@ bot.on("message", message => {
       return;
     }
     if (message.content === "!機率") {
-      message.channel.send(`R 卡機率 80%\nSR 卡機率 15%\nSSR卡 5%`);
+      message.channel.send(`R 卡機率 85%\nSR 卡機率 10%\nSSR卡 5%`);
     }
     if (message.content === "!抽卡") {
       let num = getRandomInt(1, 101);
@@ -114,9 +114,10 @@ bot.on("message", message => {
       }
     }
   }
-  // 十連抽字串
+  // 十連抽
   function tenCard() {
-    if (message.content === "!十抽") {
+    let msg = message.content.split(" ");
+    if (msg[0] === "!十抽" && !msg[1]) {
       let times = 0;
       let str = "";
       for (let i = 0; i < 10; i++) {
@@ -144,7 +145,39 @@ bot.on("message", message => {
         message.channel.send(message.author.toString() + "\n" + str);
       }
     }
+    if (msg[0] === "!十抽" && msg[1]) {
+      let times = 0;
+      let str = "";
+      for (let i = 0; i < 10; i++) {
+        let num = getRandomInt(1, 101);
+        if (num >= 1 && num <= 85) {
+          times += 1;
+          if (times == 10) break;
+          str += "恭喜抽中 R，今天還是個非洲人\n";
+        } else if (num >= 86 && num <= 95) {
+          str += "恭喜抽中 SR，再...\n";
+        } else {
+          str += "恭喜抽中 SSR，賽狗一條\n";
+        }
+      }
+      if (times != 10) {
+        message.channel.send(message.author.toString() + "\n" + str);
+      }
+      if (times == 10) {
+        num = getRandomInt(1, 101);
+        if (num >= 1 && num <= 95) {
+          str += "保底 SR，下次一定...";
+        } else {
+          str += "保底 SSR，再...";
+        }
+        message.channel.send(message.author.toString() + "\n" + str);
+      }
+      if (str.indexOf("SSR") > -1) {
+        message.channel.send(msg[1] + "囉，" + message.author.username);
+      }
+    }
   }
+  // 祭品
   foodRecommend();
   card();
   tenCard();
