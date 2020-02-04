@@ -149,7 +149,36 @@ bot.on("message", message => {
     }
   }
   // 十連抽字串
-  function tenCard() {}
+  function tenCard() {
+    if (message.content === "!字串抽") {
+      let times = 0;
+      let str = "";
+      for (let i = 0; i < 10; i++) {
+        let num = getRandomInt(1, 101);
+        if (num >= 1 && num <= 80) {
+          times += 1;
+          console.log(times);
+          if (times == 10) break;
+          str += num + " 恭喜抽中 R，今天還是個非洲人\n";
+        } else if (num >= 81 && num <= 95) {
+          str += num + "恭喜抽中 SR，再...\n";
+        } else {
+          str += num + "恭喜抽中 SSR，賽狗一條\n";
+        }
+      }
+      console.log(str);
+      message.channel.send(str);
+      if (times == 10) {
+        num = getRandomInt(1, 101);
+        if (num >= 1 && num <= 99) {
+          str += num + "保底 SR，下次一定...";
+        } else {
+          str += num + "保底 SSR，再...";
+        }
+        message.channel.send(str);
+      }
+    }
+  }
   foodRecommend();
   tenCard();
   card();
