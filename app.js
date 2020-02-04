@@ -148,8 +148,10 @@ bot.on("message", message => {
       }
     }
   }
-  // 爆雷功能
+  // 十連抽字串
+  function tenCard() {}
   foodRecommend();
+  tenCard();
   card();
 });
 
