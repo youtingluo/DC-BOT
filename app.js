@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const bot = new Discord.Client();
-const embed = new Discord.RichEmbed();
+const fs = require("fs");
+const userData = JSON.parse(fs.readFileSync("./userData.json", "utf-8"));
 // 菜單
 const food = {
   breakfast: [
@@ -92,7 +93,7 @@ bot.on("message", message => {
   }
   if (message.content === "!指令") {
     message.channel.send(
-      `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!十抽 <祭品> (出現SSR有祭品)\n!機率(卡片機率)`
+      `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!十抽 <祭品> (出現SSR有祭品)\n!機率(卡片機率)\n!存款(查詢存款)\n!規則\n!賭 <金額>`
     );
   }
   // 推薦食物功能
@@ -170,10 +171,11 @@ bot.on("message", message => {
         }
         message.channel.send(message.author.toString() + "\n" + str);
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"]
         });
       }
     }
+    // 祭品
     if (msg[0] === "!十抽" && msg[1]) {
       let times = 0;
       let str = "";
@@ -209,10 +211,65 @@ bot.on("message", message => {
       }
     }
   }
-  // 祭品
+  // 賭博
+  function gamble() {
+    let money = userData[message.author.username].money;
+    let msg = message.content.split(" ");
+    if (message.content == "!存款") {
+      message.channel.send(
+        `${message.author.toString()}，你的剩餘存款為 ${money}`
+      );
+    }
+    if (message.content == "!規則") {
+      message.channel.send(`骰出 1 ~ 70 為輸，71 ~ 100 為贏，倍率為一倍`);
+    }
+    if (msg[0] === "!給錢" && msg[1] && msg[2]) {
+      if (message.author.username != "RT") {
+        message.channel.send("你不是管理員，嫩");
+        return;
+      } else {
+        userData[msg[1]].money += Number(msg[2]);
+      }
+
+      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+        if (err) console.error(err);
+      });
+    }
+
+    if (msg[0] === "!賭" && Number(msg[1])) {
+      if (money <= 0 || msg[1] > money) {
+        message.channel.send("沒錢還想賭啊！");
+        message.channel.send("", {
+          files: ["G:\\DC_BOT\\QQ2.jpg"]
+        });
+        return;
+      }
+      let r = getRandomInt(1, 101);
+      if (r >= 1 && r <= 70) {
+        userData[message.author.username].money -= msg[1] * 1;
+        message.channel.send(
+          `你擲出了 ${r} 失去了 ${msg[1]}，現在剩餘金額 ${
+            userData[message.author.username].money
+          } 元`
+        );
+      } else {
+        userData[message.author.username].money += msg[1] * 1;
+        message.channel.send(
+          `你擲出了 ${r} 得到了 ${msg[1]}，現在剩餘金額 ${
+            userData[message.author.username].money
+          } 元`
+        );
+      }
+
+      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+        if (err) console.error(err);
+      });
+    }
+  }
   foodRecommend();
   card();
   tenCard();
+  gamble();
 });
 
 bot.login("NjczNzk3NDMzMzMwODkyODE5.XjfRLA.Ji0E8pcKt4OU4iBP3MfvAjeJ_po");
