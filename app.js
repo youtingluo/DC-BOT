@@ -1,7 +1,13 @@
+const axios = require('axios');
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 const fs = require("fs");
 const userData = JSON.parse(fs.readFileSync("./userData.json", "utf-8"));
+// axios.get('https://raw.githubusercontent.com/DDDGood/mhrhelper/master/data/weapons.json').then(res=> {
+//   let data = res.data
+//   weapons(data)
+// }).catch(err=> { return
+// })
 // 菜單
 const food = {
   breakfast: [
@@ -28,7 +34,7 @@ const food = {
     "巧克力厚片",
     "奶酥厚片",
     "燒餅油條",
-    "麵包"
+    "麵包",
   ], // 0-1 len = 2
   lunch: [
     "雞肉飯",
@@ -53,7 +59,7 @@ const food = {
     "鍋貼",
     "Subway",
     "漢堡王",
-    "擔仔麵"
+    "擔仔麵",
   ],
   dinner: [
     "炸豬排飯",
@@ -77,8 +83,8 @@ const food = {
     "烏龍麵",
     "海鮮總匯鮮蔬焗飯",
     "鴨肉飯",
-    "筒仔米糕"
-  ]
+    "筒仔米糕",
+  ],
 };
 // 產生隨機數
 function getRandomInt(min, max) {
@@ -87,7 +93,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
 }
 
-bot.on("message", message => {
+bot.on("message", (message) => {
   if (message.author.bot) {
     return;
   }
@@ -95,6 +101,40 @@ bot.on("message", message => {
     message.channel.send(
       `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!十抽 <祭品> (出現SSR有祭品)\n!機率(卡片機率)\n!存款(查詢存款)\n!規則\n!賭 <金額> (機率2倍)\n!賭大(小) <金額> (倍率1倍)\n!賭 <金額> <1~100數字>(骰到指定數字 倍率1000倍)`
     );
+  }
+  // 武器
+  function weapons() {
+    axios.get('https://raw.githubusercontent.com/DDDGood/mhrhelper/master/data/weapons.json').then(res=> {
+      let data = res.data.weapons
+      let values = Object.values(data)
+      skills(values)
+    })
+  }
+  // 武器技能查詢
+  function skills(weapons) {
+    let button = []
+    weapons.forEach(item=> {
+      button.push(Object.entries(item.silkbind_attacks))
+    })
+    let newData = weapons.map((item,index) => {
+      return {
+        ...item,
+        skill1: button[index][0][1],
+        skill2: button[index][1][1]
+      }
+    })
+    newData.forEach(item=> {
+      if (message.content == `!${item.name}`) {
+        let weaponCommand = item.skill1.command;
+        let weaponDes = item.skill1.description;
+        let weaponCommand1 = item.skill2.command;
+        let weaponDes1 = item.skill2.description;
+        message.channel.send(
+          `${weaponCommand} ${weaponDes} \n\n ${weaponCommand1} ${weaponDes1}`
+        );
+        return
+      }
+    })
   }
   // 推薦食物功能
   function foodRecommend() {
@@ -129,9 +169,7 @@ bot.on("message", message => {
     if (message.content === "!抽卡") {
       let num = getRandomInt(1, 101);
       if (num >= 1 && num <= 85) {
-        message.channel.send(
-          `${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`
-        );
+        message.channel.send(`${message.author.toString()}，恭喜抽中 R，今天還是個非洲人`);
       } else if (num >= 86 && num <= 95) {
         message.channel.send(
           `${message.author.toString()}，恭喜抽中 SR，再...`
@@ -171,7 +209,7 @@ bot.on("message", message => {
         }
         message.channel.send(message.author.toString() + "\n" + str);
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ2.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"],
         });
       }
     }
@@ -203,7 +241,7 @@ bot.on("message", message => {
         }
         message.channel.send(message.author.toString() + "\n" + str);
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ2.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"],
         });
       }
       if (str.indexOf("SSR") > -1) {
@@ -234,7 +272,7 @@ bot.on("message", message => {
         userData[msg[1]].money += Number(msg[2]);
       }
 
-      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+      fs.writeFile("./userData.json", JSON.stringify(userData), (err) => {
         if (err) console.error(err);
       });
     }
@@ -243,7 +281,7 @@ bot.on("message", message => {
       if (money <= 0 || msg[1] > money) {
         message.channel.send("沒錢還想賭啊！");
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ2.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"],
         });
         return;
       }
@@ -252,9 +290,10 @@ bot.on("message", message => {
         userData[message.author.username].money +=
           Number(Math.floor(msg[1])) * 1000;
         message.channel.send(
-          `${message.author.toString()} 你擲出了 ${r} 得到了 ${msg[1] *
-            1000}，現在剩餘金額 ${
-            userData[message.author.username].money
+          `${message.author.toString()} 你擲出了 ${r} 得到了 ${
+          msg[1] * 1000
+          }，現在剩餘金額 ${
+          userData[message.author.username].money
           } 元，賽狗一條`
         );
       } else {
@@ -262,12 +301,12 @@ bot.on("message", message => {
           Number(Math.floor(msg[1])) * 1;
         message.channel.send(
           `${message.author.toString()} 你擲出了 ${r} 失去了 ${
-            msg[1]
+          msg[1]
           }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       }
 
-      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+      fs.writeFile("./userData.json", JSON.stringify(userData), (err) => {
         if (err) console.error(err);
       });
     }
@@ -278,7 +317,7 @@ bot.on("message", message => {
       if (money <= 0 || msg[1] > money) {
         message.channel.send("沒錢還想賭啊！");
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ2.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"],
         });
         return;
       }
@@ -288,19 +327,20 @@ bot.on("message", message => {
           Number(Math.floor(msg[1])) * 1;
         message.channel.send(
           `${message.author.toString()} 你擲出了 ${r} 失去了 ${
-            msg[1]
+          msg[1]
           }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       } else {
         userData[message.author.username].money +=
           Number(Math.floor(msg[1])) * 2;
         message.channel.send(
-          `${message.author.toString()} 你擲出了 ${r} 得到了 ${msg[1] *
-            2}，現在剩餘金額 ${userData[message.author.username].money} 元`
+          `${message.author.toString()} 你擲出了 ${r} 得到了 ${
+          msg[1] * 2
+          }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       }
 
-      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+      fs.writeFile("./userData.json", JSON.stringify(userData), (err) => {
         if (err) console.error(err);
       });
     }
@@ -312,7 +352,7 @@ bot.on("message", message => {
       if (money <= 0 || msg[1] > money) {
         message.channel.send("沒錢還想賭啊！");
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ2.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"],
         });
         return;
       }
@@ -322,7 +362,7 @@ bot.on("message", message => {
           Number(Math.floor(msg[1])) * 1;
         message.channel.send(
           `${message.author.toString()} 你擲出了 ${r} 得到了 ${
-            msg[1]
+          msg[1]
           }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       } else {
@@ -330,11 +370,11 @@ bot.on("message", message => {
           Number(Math.floor(msg[1])) * 1;
         message.channel.send(
           `${message.author.toString()} 你擲出了 ${r} 失去了 ${
-            msg[1]
+          msg[1]
           }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       }
-      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+      fs.writeFile("./userData.json", JSON.stringify(userData), (err) => {
         if (err) console.error(err);
       });
     }
@@ -346,7 +386,7 @@ bot.on("message", message => {
       if (money <= 0 || msg[1] > money) {
         message.channel.send("沒錢還想賭啊！");
         message.channel.send("", {
-          files: ["G:\\DC_BOT\\QQ2.jpg"]
+          files: ["G:\\DC_BOT\\QQ2.jpg"],
         });
         return;
       }
@@ -356,7 +396,7 @@ bot.on("message", message => {
           Number(Math.floor(msg[1])) * 1;
         message.channel.send(
           `${message.author.toString()} 你擲出了 ${r} 得到了 ${
-            msg[1]
+          msg[1]
           }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       } else {
@@ -364,20 +404,21 @@ bot.on("message", message => {
           Number(Math.floor(msg[1])) * 1;
         message.channel.send(
           `${message.author.toString()} 你擲出了 ${r} 失去了 ${
-            msg[1]
+          msg[1]
           }，現在剩餘金額 ${userData[message.author.username].money} 元`
         );
       }
-      fs.writeFile("./userData.json", JSON.stringify(userData), err => {
+      fs.writeFile("./userData.json", JSON.stringify(userData), (err) => {
         if (err) console.error(err);
       });
     }
   }
-
-  foodRecommend();
-  card();
-  tenCard();
-  gamble();
+  
+  weapons()
+  // foodRecommend();
+  //card();
+  // tenCard();
+  // gamble();
 });
 
 bot.login("NjczNzk3NDMzMzMwODkyODE5.XjfRLA.Ji0E8pcKt4OU4iBP3MfvAjeJ_po");
