@@ -1,14 +1,12 @@
 const axios = require('axios');
 const Discord = require("discord.js");
+require('dotenv').config()
 const bot = new Discord.Client();
 const fs = require("fs");
 const userData = JSON.parse(fs.readFileSync("./userData.json", "utf-8"));
-// axios.get('https://raw.githubusercontent.com/DDDGood/mhrhelper/master/data/weapons.json').then(res=> {
-//   let data = res.data
-//   weapons(data)
-// }).catch(err=> { return
-// })
 // 菜單
+
+console.log(process.env.token)
 const food = {
   breakfast: [
     "豬排蛋餅",
@@ -99,42 +97,8 @@ bot.on("message", (message) => {
   }
   if (message.content === "!指令") {
     message.channel.send(
-      `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!十抽 <祭品> (出現SSR有祭品)\n!機率(卡片機率)\n!存款(查詢存款)\n!規則\n!賭 <金額> (機率2倍)\n!賭大(小) <金額> (倍率1倍)\n!賭 <金額> <1~100數字>(骰到指定數字 倍率1000倍)`
+      `!早餐\n!午餐\n!晚餐\n!抽卡(單抽)\n!十抽(十連抽)\n!十抽 <祭品> (出現SSR有祭品)\n!機率(卡片機率)\n!存款(查詢存款)\n!規則\n!賭 <金額> (機率2倍)\n!賭大(小) <金額> (倍率1倍)\n!賭 <金額> <1~100數字>(骰到指定數字 倍率1000倍)\n!+魔物武器名稱${process.env}`
     );
-  }
-  // 武器
-  function weapons() {
-    axios.get('https://raw.githubusercontent.com/DDDGood/mhrhelper/master/data/weapons.json').then(res=> {
-      let data = res.data.weapons
-      let values = Object.values(data)
-      skills(values)
-    })
-  }
-  // 武器技能查詢
-  function skills(weapons) {
-    let button = []
-    weapons.forEach(item=> {
-      button.push(Object.entries(item.silkbind_attacks))
-    })
-    let newData = weapons.map((item,index) => {
-      return {
-        ...item,
-        skill1: button[index][0][1],
-        skill2: button[index][1][1]
-      }
-    })
-    newData.forEach(item=> {
-      if (message.content == `!${item.name}`) {
-        let weaponCommand = item.skill1.command;
-        let weaponDes = item.skill1.description;
-        let weaponCommand1 = item.skill2.command;
-        let weaponDes1 = item.skill2.description;
-        message.channel.send(
-          `${weaponCommand} ${weaponDes} \n\n ${weaponCommand1} ${weaponDes1}`
-        );
-        return
-      }
-    })
   }
   // 推薦食物功能
   function foodRecommend() {
@@ -413,12 +377,10 @@ bot.on("message", (message) => {
       });
     }
   }
-  
-  weapons()
-  // foodRecommend();
-  //card();
-  // tenCard();
-  // gamble();
+  foodRecommend();
+  card();
+  tenCard();
+  gamble();
 });
 
-bot.login("NjczNzk3NDMzMzMwODkyODE5.XjfRLA.Ji0E8pcKt4OU4iBP3MfvAjeJ_po");
+bot.login(process.env.token);
